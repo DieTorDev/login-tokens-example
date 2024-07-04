@@ -2,25 +2,16 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
-const tasksRoutes = require('./routes/tasks.routes');
+const corsOptions = require('./config/cors.config');
+const authRoutes = require('./routes/auth.routes');
 
 require('dotenv').config();
-
-// Rutas
-
-// Middlewares para cliente
-// Opciones avanzadas de configuración de CORS
-const corsOptions = {
-  origin: 'http://localhost:5173', // Dominios autorizados
-  methods: '*', // Métodos permitidos
-  optionsSuccessStatus: 204
-};
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
 // Uso de rutas
-app.use('/api/tasks', tasksRoutes);
+app.use('/auth', authRoutes);
 
 const startSever = async () => {
   try {
