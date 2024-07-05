@@ -1,12 +1,23 @@
-import { useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { loginRequest } from '../utils/auth/auth.api';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContexts';
 
 const Login = () => {
-	const [userData, setUserData] = useState();
-	console.log(userData);
+	const { userData, setUserData, loading } = useContext(AuthContext);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!userData) return;
+		navigate('/');
+	}, [userData]);
+
+	if (loading) return <h1>Loading...</h1>;
+
 	return (
 		<>
 			<h1>LOGIN</h1>
+			<button onClick={() => navigate('/')}> Go Back </button>
 			<form onSubmit={event => handleSubmit(event, setUserData)}>
 				<div>
 					<label htmlFor='email'>Email</label>
@@ -16,7 +27,7 @@ const Login = () => {
 					<label htmlFor='password'>Password</label>
 					<input type='text' id='password' name='password' />
 				</div>
-				<input type='submit' value='Register User' />
+				<input type='submit' value='Login User' />
 			</form>
 		</>
 	);

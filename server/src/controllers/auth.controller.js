@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const UserModel = require('../models/users.model');
 const createAccessToken = require('../utils/jwt');
+const TOKEN_SECRET = require('../config/token.config');
 
 const authController = {};
 
@@ -43,9 +45,7 @@ authController.login = async (req, res) => {
     }
 
     const token = await createAccessToken({
-      id: userFound._id,
-      username: userFound.username,
-      email: userFound.email
+      id: userFound._id
     });
 
     return res.cookie('token', token).send({
@@ -55,6 +55,35 @@ authController.login = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).send({ error: err.message });
+  }
+};
+
+authController.verifyToken = async (req, res) => {
+  const { token } = req.cookies;
+
+  if (!token) return res.status(401).send({ message: 'No token' });
+
+  try {
+    const user = jwt.verify(token, TOKEN_SECRET);
+
+    if (!user) {
+      return res.status(401).send({ message: 'Invalid Token' });
+    }
+
+    const userFound = await UserModel.findById(user.id);
+
+    if (!userFound) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    return res.status(200).send({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ message: 'Internal server error' });
   }
 };
 

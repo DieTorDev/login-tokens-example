@@ -1,9 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../utils/auth/auth.api';
 
 const Register = () => {
+	const navigate = useNavigate();
+
 	return (
 		<>
 			<h1>REGISTER</h1>
+			<button onClick={() => navigate('/')}> Go Back </button>
+
 			<form onSubmit={handleSubmit}>
 				<div>
 					<label htmlFor='username'>Username</label>
