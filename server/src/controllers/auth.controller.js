@@ -42,7 +42,7 @@ authController.login = async (req, res) => {
       });
     }
 
-    const token = createAccessToken({
+    const token = await createAccessToken({
       id: userFound._id,
       username: userFound.username,
       email: userFound.email
